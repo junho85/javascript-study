@@ -15,3 +15,6 @@ assert.deepStrictEqual("nice-to-meet-you".split("-", 1)[1], undefined);
 // out of range - undefined
 assert.deepStrictEqual("hello-world".split("-")[2], undefined);
 
+// split string and get two variables in one line
+const [left, right] = "hello-world".split("-");
+console.log(left, right); // hello world
