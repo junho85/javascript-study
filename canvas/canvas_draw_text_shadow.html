@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas Example</title>
+
+    <style>
+        #my_canvas {
+            border: 1px solid grey;
+        }
+    </style>
+
+</head>
+<body>
+<canvas id="my_canvas" width="600" height="80"></canvas><br>
+<input id="draw_text" value="안녕하세요. 반갑습니다.">
+</body>
+
+<script>
+    document.getElementById("draw_text").addEventListener("keyup", function() {
+        var canvas = document.getElementById("my_canvas");
+        var context = canvas.getContext("2d");
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        var text = document.getElementById("draw_text").value;
+        var x = 20;
+        var y = 50;
+
+        context.font = "40pt BM YEONSUNG OTF";
+
+        context.shadowColor = "black";
+        context.shadowBlur = 5;
+        context.shadowOffsetX = 5;
+        context.shadowOffsetY = 5;
+
+        context.lineJoin = 'round';
+        context.lineWidth = 10;
+        context.strokeText(text, x, y);
+
+        context.fillStyle = 'white';
+        context.fillText(text, x, y);
+    });
+
+    document.getElementById("draw_text").dispatchEvent(new Event('keyup'));
+</script>
+
+</html>
