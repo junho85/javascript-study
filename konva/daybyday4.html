@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://unpkg.com/konva@3.1.6/konva.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Day by Day 3 Images and Texts</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #F0F0F0;
+        }
+
+        #preview_container .konvajs-content {
+            background: white;
+        }
+
+        #drop_zone {
+            border: 5px solid blue;
+            width:  200px;
+            height: 100px;
+        }
+    </style>
+
+</head>
+<body>
+
+<main>
+    <h2>하하하</h2>
+    <div id="preview_container">
+    </div>
+
+    <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+        <p>Drag one or more files to this Drop Zone ...</p>
+    </div>
+    <button onclick="clear_all()">clear</button>
+</main>
+
+
+<script>
+let width = 1400/2; // 350*4 = 1400
+let height = 450/2;
+
+let stage = new Konva.Stage({
+    container: 'preview_container',
+    width: width,
+    height: height,
+    pixelRatio: 1,
+});
+
+let layerImage = new Konva.Layer();
+let layerText = new Konva.Layer();
+
+let texts = [
+    "영어 105일",
+    "동영상 171일",
+    "TIL 156일",
+    "그림 2일"
+];
+
+for (let i=0; i<4; i++) {
+    let textNode = new Konva.Text({
+        "width": "auto",
+        "height": "auto",
+        "text": texts[i],
+        "fontFamily": "BM YEONSUNG OTF",
+        "align": "left",
+        "fill": "#FFFFFF",
+        "fontSize": 72 / 2,
+        // "fontStyle": "bold",
+        "x": i * (350/2) + 30,
+        "y": 100,
+        "stroke": "black",
+        "strokeWidth": 7,
+        "shadowColor": "black",
+        "shadowBlur": 5,
+        "shadowOffsetX": 3,
+        "shadowOffsetY": 3,
+        "shadowOpacity": 0.5,
+        "lineJoin": "round",
+        draggable: true,
+    });
+
+    layerText.add(textNode);
+}
+
+const oldFunc = layerText.getContext().fillStrokeShape;
+
+layerText.getContext().fillStrokeShape = function(shape){
+    if (shape instanceof Konva.Text) {
+        if (shape.getStrokeEnabled()) {
+            this._stroke(shape);
+        }
+        if (shape.getFillEnabled()) {
+            this._fill(shape);
+        }
+    } else {
+        oldFunc.call(this, shape);
+    }
+};
+
+
+// add the layer to the stage
+stage.add(layerImage);
+stage.add(layerText);
+
+
+function dropHandler(ev) {
+    console.log('File(s) dropped');
+
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+
+    if (ev.dataTransfer.items) {
+        // Use DataTransferItemList interface to access the file(s)
+        for (let i = 0; i < ev.dataTransfer.items.length; i++) {
+            // If dropped items aren't files, reject them
+            if (ev.dataTransfer.items[i].kind === 'file' &&
+                ev.dataTransfer.items[i].type.match(/image.*/)) {
+                const file = ev.dataTransfer.items[i].getAsFile();
+
+                let reader = new FileReader();
+                reader.onload = function() {
+                    // console.log("reader.onload");
+
+                    let imageObj = new Image();
+                    imageObj.onload = function() {
+                        // console.log("image onload");
+                        let img = new Konva.Image({
+                            x: (350/2)*i,
+                            y: 0,
+                            image: this,
+                            width: 350/2,
+                            height: 450/2,
+                            draggable: true,
+                        });
+                        img.on('dragend', function() {
+                            console.log("drag end");
+                            console.log(this.attrs.x);
+                            this.y(0);
+                            let x_step = parseInt((this.x() + (350/2/2))/(350/2)) * (350/2);
+                            console.log(x_step);
+                            this.x(x_step);
+                            stage.draw();
+                        });
+                        layerImage.add(img);
+                        stage.draw();
+                    };
+                    imageObj.src = this.result;
+                };
+                reader.readAsDataURL(file);
+
+                // console.log('... file[' + i + '].name = ' + file.name);
+            }
+        }
+    } else {
+        // Use DataTransfer interface to access the file(s)
+        for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+            console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+        }
+    }
+}
+
+function dragOverHandler(ev) {
+    // console.log('File(s) in drop zone');
+
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+}
+
+function clear_all() {
+    stage.find("Image").destroy();
+    stage.draw();
+}
+</script>
+
+
+</body>
+</html>
