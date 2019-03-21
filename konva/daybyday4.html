@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://unpkg.com/konva@3.1.6/konva.min.js"></script>
+    <script src="https://unpkg.com/konva@3.2.2/konva.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+
     <meta charset="UTF-8">
     <title>Day by Day 3 Images and Texts</title>
     <style>
@@ -35,6 +39,13 @@
         <p>Drag one or more files to this Drop Zone ...</p>
     </div>
     <button onclick="clear_all()">clear</button>
+
+    <div id="buttons">
+        <button id="save">
+            Save as image
+        </button>
+    </div>
+
 </main>
 
 
@@ -52,11 +63,27 @@ let stage = new Konva.Stage({
 let layerImage = new Konva.Layer();
 let layerText = new Konva.Layer();
 
+function diffDays(baseDay, today) {
+    return parseInt((today - baseDay) / 24 / 60 / 60 / 1000) + 1;
+}
+
+const base_day = new Date('2019-03-20');
+
+const today = new Date();
+today.setHours(0,0,0);
+
+let add_day = diffDays(base_day, today);
+
+let english_day = 106 + add_day;
+let movie_day = 172 + add_day;
+let til_day = 157 + add_day;
+let drawing_day = 3 + add_day;
+
 let texts = [
-    "영어 105일",
-    "동영상 171일",
-    "TIL 156일",
-    "그림 2일"
+    `영어 ${english_day}일`,
+    `동영상 ${movie_day}일`,
+    `TIL ${til_day}일`,
+    `그림 ${drawing_day}일`
 ];
 
 for (let i=0; i<4; i++) {
@@ -65,11 +92,11 @@ for (let i=0; i<4; i++) {
         "height": "auto",
         "text": texts[i],
         "fontFamily": "BM YEONSUNG OTF",
-        "align": "left",
+        "align": "center",
         "fill": "#FFFFFF",
         "fontSize": 72 / 2,
         // "fontStyle": "bold",
-        "x": i * (350/2) + 30,
+        "x": i * (350/2) + 20,
         "y": 100,
         "stroke": "black",
         "strokeWidth": 7,
@@ -85,9 +112,24 @@ for (let i=0; i<4; i++) {
     layerText.add(textNode);
 }
 
-const oldFunc = layerText.getContext().fillStrokeShape;
+// const oldFunc = layerText.getContext().fillStrokeShape;
+//
+// layerText.getContext().fillStrokeShape = function(shape){
+//     if (shape instanceof Konva.Text) {
+//         if (shape.getStrokeEnabled()) {
+//             this._stroke(shape);
+//         }
+//         if (shape.getFillEnabled()) {
+//             this._fill(shape);
+//         }
+//     } else {
+//         oldFunc.call(this, shape);
+//     }
+// };
 
-layerText.getContext().fillStrokeShape = function(shape){
+
+const originalFillStroke = Konva.Context.prototype.fillStrokeShape;
+Konva.Context.prototype.fillStrokeShape = function(shape) {
     if (shape instanceof Konva.Text) {
         if (shape.getStrokeEnabled()) {
             this._stroke(shape);
@@ -96,10 +138,9 @@ layerText.getContext().fillStrokeShape = function(shape){
             this._fill(shape);
         }
     } else {
-        oldFunc.call(this, shape);
+        originalFillStroke.call(this, shape);
     }
 };
-
 
 // add the layer to the stage
 stage.add(layerImage);
@@ -173,6 +214,23 @@ function clear_all() {
     stage.find("Image").destroy();
     stage.draw();
 }
+
+// function from https://stackoverflow.com/a/15832662/512042
+function downloadURI(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    delete link;
+}
+
+document.getElementById('save').addEventListener('click', function () {
+    var dataURL = stage.toDataURL();
+    downloadURI(dataURL, 'stage.png');
+}, false);
+
 </script>
 
 
