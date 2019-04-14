@@ -20,7 +20,7 @@
             background: white;
         }
 
-        #drop_zone {
+        .drop_zone {
             border: 5px solid blue;
             width:  200px;
             height: 100px;
@@ -35,10 +35,21 @@
     <div id="preview_container">
     </div>
 
-    <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
-        <p>Drag one or more files to this Drop Zone ...</p>
+    <div class="row">
+        <div id="drop_zone0" class="drop_zone" ondrop="dropHandler(event, 0);" ondragover="dragOverHandler(event);">
+            <p>영어</p>
+        </div>
+        <div id="drop_zone1" class="drop_zone" ondrop="dropHandler(event, 1);" ondragover="dragOverHandler(event);">
+            <p>동영상</p>
+        </div>
+        <div id="drop_zone2" class="drop_zone" ondrop="dropHandler(event, 2);" ondragover="dragOverHandler(event);">
+            <p>TIL</p>
+        </div>
+        <div id="drop_zone3" class="drop_zone" ondrop="dropHandler(event, 3);" ondragover="dragOverHandler(event);">
+            <p>그림</p>
+        </div>
+        <button onclick="clear_all()">clear</button>
     </div>
-    <button onclick="clear_all()">clear</button>
 
     <div id="buttons">
         <button id="save">
@@ -73,6 +84,7 @@ const today = new Date();
 today.setHours(0,0,0);
 
 let add_day = diffDays(base_day, today);
+// let add_day = diffDays(base_day, today) -1; // 하루 밀렸을 때
 
 let english_day = 106 + add_day;
 let movie_day = 172 + add_day;
@@ -107,26 +119,44 @@ for (let i=0; i<4; i++) {
         "shadowOpacity": 0.5,
         "lineJoin": "round",
         draggable: true,
+        "id": "text_" + i,
     });
 
     layerText.add(textNode);
 }
 
-// const oldFunc = layerText.getContext().fillStrokeShape;
-//
-// layerText.getContext().fillStrokeShape = function(shape){
-//     if (shape instanceof Konva.Text) {
-//         if (shape.getStrokeEnabled()) {
-//             this._stroke(shape);
-//         }
-//         if (shape.getFillEnabled()) {
-//             this._fill(shape);
-//         }
-//     } else {
-//         oldFunc.call(this, shape);
-//     }
-// };
+let images = [
 
+];
+
+for (let i=0; i<4; i++) {
+    let imageObj = new Image();
+    imageObj.onload = function() {
+        // console.log("image onload");
+        let img = new Konva.Image({
+            x: (350/2)*i,
+            y: 0,
+            image: this,
+            width: 350/2,
+            height: 450/2,
+            draggable: true,
+            "id": "img_" + i,
+        });
+        // img.on('dragend', function() {
+        //     console.log("drag end");
+        //     console.log(this.attrs.x);
+        //     this.y(0);
+        //     let x_step = parseInt((this.x() + (350/2/2))/(350/2)) * (350/2);
+        //     console.log(x_step);
+        //     this.x(x_step);
+        //     stage.draw();
+        // });
+        layerImage.add(img);
+        stage.draw();
+    };
+
+    imageObj.src = "empty_image.png";
+}
 
 const originalFillStroke = Konva.Context.prototype.fillStrokeShape;
 Konva.Context.prototype.fillStrokeShape = function(shape) {
@@ -147,7 +177,7 @@ stage.add(layerImage);
 stage.add(layerText);
 
 
-function dropHandler(ev) {
+function dropHandler(ev, img_num) {
     console.log('File(s) dropped');
 
     // Prevent default behavior (Prevent file from being opened)
@@ -165,27 +195,13 @@ function dropHandler(ev) {
                 reader.onload = function() {
                     // console.log("reader.onload");
 
+                    console.log(img_num);
+
                     let imageObj = new Image();
                     imageObj.onload = function() {
-                        // console.log("image onload");
-                        let img = new Konva.Image({
-                            x: (350/2)*i,
-                            y: 0,
-                            image: this,
-                            width: 350/2,
-                            height: 450/2,
-                            draggable: true,
-                        });
-                        img.on('dragend', function() {
-                            console.log("drag end");
-                            console.log(this.attrs.x);
-                            this.y(0);
-                            let x_step = parseInt((this.x() + (350/2/2))/(350/2)) * (350/2);
-                            console.log(x_step);
-                            this.x(x_step);
-                            stage.draw();
-                        });
-                        layerImage.add(img);
+                        let img = layerImage.find("#img_" + img_num);
+
+                        img.image(imageObj);
                         stage.draw();
                     };
                     imageObj.src = this.result;
@@ -228,7 +244,7 @@ function downloadURI(uri, name) {
 
 document.getElementById('save').addEventListener('click', function () {
     var dataURL = stage.toDataURL();
-    downloadURI(dataURL, 'stage.png');
+    downloadURI(dataURL, '매일매일.png');
 }, false);
 
 </script>
