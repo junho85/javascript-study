@@ -24,6 +24,7 @@
             border: 5px solid blue;
             width:  200px;
             height: 100px;
+            float: left;
         }
     </style>
 
@@ -31,7 +32,7 @@
 <body>
 
 <main>
-    <h2>하하하</h2>
+    <h2 id="date">하하하</h2>
     <div id="preview_container">
     </div>
 
@@ -78,13 +79,16 @@ function diffDays(baseDay, today) {
     return parseInt((today - baseDay) / 24 / 60 / 60 / 1000) + 1;
 }
 
-const base_day = new Date('2019-03-20');
+const start_day = new Date('2019-03-20');
 
 const today = new Date();
 today.setHours(0,0,0);
 
-let add_day = diffDays(base_day, today);
-// let add_day = diffDays(base_day, today) -1; // 하루 밀렸을 때
+let selected_day = new Date();
+selected_day.setHours(0,0,0);
+selected_day.setDate(selected_day.getDate() - 1); // 하루 밀렸을 때
+
+let add_day = diffDays(start_day, selected_day);
 
 let english_day = 106 + add_day;
 let movie_day = 172 + add_day;
@@ -242,10 +246,30 @@ function downloadURI(uri, name) {
     delete link;
 }
 
-document.getElementById('save').addEventListener('click', function () {
-    var dataURL = stage.toDataURL();
-    downloadURI(dataURL, '매일매일.png');
-}, false);
+Date.prototype.yyyy_mm_dd = function() {
+    const mm = this.getMonth() + 1;
+    const dd = this.getDate();
+
+    return [this.getFullYear(),
+        (mm>9 ? '' : '0') + mm,
+        (dd>9
+            ? '' : '0') + dd
+    ].join('-');
+};
+
+function set_date() {
+    $("#date").text(selected_day.yyyy_mm_dd());
+}
+
+$(document).ready(function () {
+    set_date();
+
+    document.getElementById('save').addEventListener('click', function () {
+        var dataURL = stage.toDataURL();
+        downloadURI(dataURL, '매일매일.png');
+    }, false);
+
+});
 
 </script>
 
