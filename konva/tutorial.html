@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konva Tutorial</title>
+    <script src="https://unpkg.com/konva@3.2.6/konva.min.js"></script>
+</head>
+<body>
+<div id="container" style="border: 1px solid black"></div>
+
+<script>
+    // konva
+    var stage = new Konva.Stage({
+        container: 'container',
+        width: 500,
+        height: 500,
+    });
+
+    var layer = new Konva.Layer();
+
+    // var triangle = new Konva.Shape({
+    //     sceneFunc: function(context) {
+    //         context.beginPath();
+    //         context.moveTo(20, 50);
+    //         context.lineTo(220, 80);
+    //         context.quadraticCurveTo(150, 100, 260, 170);
+    //         context.closePath();
+    //
+    //         // special Konva.js method
+    //         context.fillStrokeShape(this);
+    //     },
+    //     fill: '#00D2FF',
+    //     stroke: 'black',
+    //     strokeWidth: 4
+    // });
+    //
+    // layer.add(triangle);
+
+    // var pentagon = new Konva.RegularPolygon({
+    //     x: stage.width() / 2,
+    //     y: stage.height() / 2,
+    //     sides: 5,
+    //     radius: 70,
+    //     fill: 'red',
+    //     stroke: 'black',
+    //     strokeWidth: 4,
+    //     shadowOffsetX: 20,
+    //     shadowOffsetY: 25,
+    //     shadowBlur: 40,
+    //     opacity: 0.5
+    // });
+    //
+    // layer.add(pentagon);
+
+    var circle = new Konva.Circle({
+        x: stage.width() / 2,
+        y: stage.height() / 2,
+        radius: 70,
+        fill: 'red',
+        stroke: 'black',
+        strokeWidth: 4,
+        // draggable: true,
+    });
+
+    circle.draggable('true');
+
+    circle.on('mouseout touchend', function() {
+        console.log('user input');
+    });
+
+    circle.on('xChange', function() {
+        console.log('position change');
+    });
+
+    circle.on('dragend', function() {
+        console.log('drag stopped');
+    });
+
+    layer.add(circle);
+
+    stage.add(layer);
+
+    layer.draw();
+
+</script>
+
+</body>
+</html>
