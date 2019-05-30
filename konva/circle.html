@@ -1,18 +1,28 @@
+<!DOCTYPE html>
 <html>
-
 <head>
-    <script src="https://unpkg.com/konva@3.2.6/konva.min.js"></script>
+    <script src="https://unpkg.com/konva@3.2.7/konva.min.js"></script>
+    <meta charset="utf-8">
+    <title>Konva Circle Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+    </style>
 </head>
-
 <body>
-<div id="container" style="border: 1px solid black"></div>
-
+<div id="container"></div>
 <script>
-    // konva
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+
     var stage = new Konva.Stage({
         container: 'container',
-        width: 500,
-        height: 500,
+        width: width,
+        height: height
     });
 
     var layer = new Konva.Layer();
@@ -20,20 +30,16 @@
     var circle = new Konva.Circle({
         x: stage.width() / 2,
         y: stage.height() / 2,
-        radius: 70,
-        fill: 'red',
+        radius: 100,
+        fill: 'blue',
         stroke: 'black',
-        strokeWidth: 4
+        strokeWidth: 19,
+        draggable: true,
     });
 
     layer.add(circle);
 
     stage.add(layer);
-
-    layer.draw();
-
 </script>
-
 </body>
 </html>
-
