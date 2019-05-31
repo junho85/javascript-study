@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://unpkg.com/konva@3.2.7/konva.min.js"></script>
+    <meta charset="utf-8" />
+    <title>Konva Brighten Image Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+<div id="container"></div>
+<script>
+    let stage = new Konva.Stage({
+        container: 'container',
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+
+    let layer = new Konva.Layer();
+
+    stage.add(layer);
+
+    Konva.Image.fromURL('images/bike-apeach.png', function(image) {
+        image.cache();
+        image.filters([Konva.Filters.Brighten]);
+        image.brightness(0.2);
+
+        image.draggable(true);
+
+        layer.add(image);
+        layer.draw();
+    })
+
+</script>
+</body>
+</html>
