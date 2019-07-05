@@ -3,7 +3,7 @@
 <head>
     <script src="https://unpkg.com/konva@3.2.7/konva.min.js"></script>
     <meta charset="utf-8" />
-    <title>Konva Blur Image Demo</title>
+    <title>Konva Grayscale Image Demo</title>
     <style>
         body {
             margin: 0;
@@ -29,8 +29,7 @@
 
     Konva.Image.fromURL('images/bike-apeach.png', function(image) {
         image.cache();
-        image.filters([Konva.Filters.Blur]);
-        image.blurRadius(20);
+        image.filters([Konva.Filters.Grayscale]);
 
         image.draggable(true);
 
