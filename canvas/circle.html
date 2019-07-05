@@ -10,12 +10,15 @@
     var canvas = document.getElementById("myCanvas");
     var context = canvas.getContext("2d");
 
-    context.arc(canvas.width / 2, canvas.height / 2, 70, 0, 2 * Math.PI, false);
+    context.arc(canvas.width / 2, canvas.height / 2,
+        70, 0, 2 * Math.PI, false);
     context.fillStyle = "red";
     context.fill();
+
     context.lineWidth = 4;
     context.strokeStyle = "black";
     context.stroke();
+
 </script>
 
 </body>
