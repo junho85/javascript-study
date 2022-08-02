@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CORS Test</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+<button onclick="test_fetch()">테스트 fetch</button><br>
+<button onclick="test_xhr()">테스트 xhr</button><br>
+<button onclick="test_jquery()">테스트 jquery</button><br>
+
+<script>
+  async function test_fetch() {
+      try {
+          await fetch("http://daum.net");
+      } catch (err) {
+          alert(err);
+      }
+  }
+
+  function test_xhr() {
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = () => {
+          if (xhr.readyState === xhr.DONE) {
+              if (xhr.status === 200 || xhr.status === 201) {
+                  console.log(xhr.responseText);
+              } else {
+                  alert(xhr.responseText);
+              }
+          }
+      }
+      xhr.open('get', 'http://daum.net');
+      xhr.send();
+  }
+
+  function test_jquery() {
+      $.ajax()
+  }
+</script>
+
+</body>
+</html>
